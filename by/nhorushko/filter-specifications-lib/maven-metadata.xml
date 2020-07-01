@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>by.nhorushko</groupId>
+  <artifactId>filter-specifications-lib</artifactId>
+  <versioning>
+    <versions>
+      <version>1.0-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20200701133148</lastUpdated>
+  </versioning>
+</metadata>
