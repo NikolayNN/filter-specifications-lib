@@ -10,8 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-@Service
-public class Converters {
+public abstract class Converters {
 
     protected Map<Class<?>, Function<String, ? extends Comparable<?>>> map = new HashMap<>();
 
@@ -24,6 +23,9 @@ public class Converters {
         map.put(Boolean.class, Boolean::valueOf);
         map.put(Instant.class, Instant::parse);
     }
+
+    // Add custom converters
+    public abstract void addConverters();
 
     @SuppressWarnings("unchecked")
     public <T extends Comparable<T>> Function<String, T> getFunction(Class<?> classObj) {

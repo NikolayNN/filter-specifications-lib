@@ -10,7 +10,18 @@
 
     <properties>
         <java.version>11</java.version>
+        <github.global.server>github</github.global.server>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
+
+    <distributionManagement>
+        <repository>
+            <id>internal.repo</id>
+            <name>Temporary Staging Repository</name>
+            <url>file://${project.build.directory}/mvn-repo</url>
+        </repository>
+    </distributionManagement>
 
     <dependencies>
 
@@ -57,10 +68,20 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+                <version>3.8.1</version>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.1</version>
+                <configuration>
+                    <altDeploymentRepository>internal.repo::default::file://${project.build.directory}/mvn-repo</altDeploymentRepository>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>com.github.github</groupId>
                 <artifactId>site-maven-plugin</artifactId>
@@ -73,7 +94,7 @@
                     <includes>
                         <include>**/*</include>
                     </includes>
-                    <repositoryName>access-service</repositoryName>
+                    <repositoryName>filter-specifications-lib</repositoryName>
                     <repositoryOwner>NikolayNN</repositoryOwner>
                 </configuration>
                 <executions>
