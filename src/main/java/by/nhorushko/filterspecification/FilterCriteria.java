@@ -1,11 +1,10 @@
 package by.nhorushko.filterspecification;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -48,12 +47,12 @@ public class FilterCriteria<T extends Comparable<T>> {
     /**
      * Holds the filter criteria
      */
-    private final Collection<String> originalValues;
+    private final List<String> originalValues;
 
     /**
      * Holds the filter criteria as type <T>
      */
-    private final Collection<T> convertedValues;
+    private final List<T> convertedValues;
 
     /**
      * Constructor for Filter Criteria with DB table column name, filter string and
@@ -122,50 +121,30 @@ public class FilterCriteria<T extends Comparable<T>> {
 
         // Validations
         Validate.notEmpty(fieldName, "Field name can't be empty");
-        Validate.notEmpty(filter, "Filter criteria can't be empty");
 
         this.fieldName = fieldName;
-
         this.converterFunction = converterFunction;
 
-        String[] filterSplit = StringUtils.split(filter, "#");
-
-        if (filterSplit.length != 2) {
-            throw new IllegalArgumentException("More than one or no separator '#' found");
-        }
-
-        String operation = filterSplit[0];
-        String operationValue = filterSplit[1];
-
-        // Convert the operation name to enum
-        this.operation = FilterOperation.fromValue(operation);
-
-        // Split the filter value as comma separated.
-        String[] operationValues = StringUtils.split(operationValue, ",");
-
-        if (operationValues.length < 1) {
-            throw new IllegalArgumentException("Operation value can't be empty");
-        }
-
-        this.originalValues = Arrays.asList(operationValues);
+        FilterValue filterValue = FilterValues.parse(filter);
+        this.operation = filterValue.getFilterOperation();
+        this.originalValues = filterValue.getValues();
         this.convertedValues = new ArrayList<>();
 
         // Validate other conditions
-        validateAndAssign(operationValues);
-
+        validateAndAssign(this.originalValues);
     }
 
-    private void validateAndAssign(String[] operationValues) {
+    private void validateAndAssign(List<String> operationValues) {
 
         //For operation 'btn'
         if (FilterOperation.BETWEEN == operation) {
-            if (operationValues.length != 2) {
+            if (operationValues.size() != 2) {
                 throw new IllegalArgumentException("For 'btn' operation two values are expected");
             } else {
 
                 //Convert
-                T value1 = this.converterFunction.apply(operationValues[0]);
-                T value2 = this.converterFunction.apply(operationValues[1]);
+                T value1 = this.converterFunction.apply(operationValues.get(0));
+                T value2 = this.converterFunction.apply(operationValues.get(1));
 
                 //Set min and max values
                 if (value1.compareTo(value2) > 0) {
@@ -183,7 +162,7 @@ public class FilterCriteria<T extends Comparable<T>> {
         } else {
             //All other operation
             if (operation != FilterOperation.IS_NULL ) {
-                this.convertedSingleValue = converterFunction.apply(operationValues[0]);
+                this.convertedSingleValue = converterFunction.apply(operationValues.get(0));
             }
         }
 
