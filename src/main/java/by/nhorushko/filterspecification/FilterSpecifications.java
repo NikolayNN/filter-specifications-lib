@@ -88,90 +88,43 @@ public class FilterSpecifications<E, T extends Comparable<T>> {
 
         map = new EnumMap<>(FilterOperation.class);
 
-        // Equal
-        map.put(FilterOperation.EQUAL, filterCriteria -> (root, criteriaQuery, criteriaBuilder) -> {
-            if (filterCriteria.getConvertedSingleValue() == null) {
-                return criteriaBuilder.conjunction();
-            }
-            return criteriaBuilder
-                    .equal(getPath(root, filterCriteria.getFieldName()), filterCriteria.getConvertedSingleValue());
-        });
+        map.put(FilterOperation.ALWAYS_TRUE, filterCriteria -> (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.conjunction());
 
-        map.put(FilterOperation.NOT_EQUAL, filterCriteria -> (root, criteriaQuery, criteriaBuilder) -> {
-            if (filterCriteria.getConvertedSingleValue() == null) {
-                return criteriaBuilder.conjunction();
-            }
-            return criteriaBuilder
-                    .notEqual(getPath(root, filterCriteria.getFieldName()), filterCriteria.getConvertedSingleValue());
-        });
+        // Equal
+        map.put(FilterOperation.EQUAL, filterCriteria -> (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder
+                .equal(getPath(root, filterCriteria.getFieldName()), filterCriteria.getConvertedSingleValue()));
+
+        map.put(FilterOperation.NOT_EQUAL, filterCriteria -> (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder
+                .notEqual(getPath(root, filterCriteria.getFieldName()), filterCriteria.getConvertedSingleValue()));
 
         map.put(FilterOperation.GREATER_THAN,
-                filterCriteria -> (root, criteriaQuery, criteriaBuilder) -> {
-                    if (filterCriteria.getConvertedSingleValue() == null) {
-                        return criteriaBuilder.conjunction();
-                    }
-                    return criteriaBuilder.greaterThan(
-                            getPath(root, filterCriteria.getFieldName()), filterCriteria.getConvertedSingleValue());
-                });
+                filterCriteria -> (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.greaterThan(
+                        getPath(root, filterCriteria.getFieldName()), filterCriteria.getConvertedSingleValue()));
 
         map.put(FilterOperation.GREATER_THAN_OR_EQUAL_TO,
-                filterCriteria -> (root, criteriaQuery, criteriaBuilder) -> {
-                    if (filterCriteria.getConvertedSingleValue() == null) {
-                        return criteriaBuilder.conjunction();
-                    }
-                    return criteriaBuilder.greaterThanOrEqualTo(
-                            getPath(root, filterCriteria.getFieldName()), filterCriteria.getConvertedSingleValue());
-                });
+                filterCriteria -> (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.greaterThanOrEqualTo(
+                        getPath(root, filterCriteria.getFieldName()), filterCriteria.getConvertedSingleValue()));
 
-        map.put(FilterOperation.LESS_THAN, filterCriteria -> (root, criteriaQuery, criteriaBuilder) -> {
-            if (filterCriteria.getConvertedSingleValue() == null) {
-                return criteriaBuilder.conjunction();
-            }
-            return criteriaBuilder
-                    .lessThan(getPath(root, filterCriteria.getFieldName()), filterCriteria.getConvertedSingleValue());
-        });
+        map.put(FilterOperation.LESS_THAN, filterCriteria -> (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder
+                .lessThan(getPath(root, filterCriteria.getFieldName()), filterCriteria.getConvertedSingleValue()));
 
         map.put(FilterOperation.LESSTHAN_OR_EQUAL_TO,
-                filterCriteria -> (root, criteriaQuery, criteriaBuilder) -> {
-                    if (filterCriteria.getConvertedSingleValue() == null) {
-                        return criteriaBuilder.conjunction();
-                    }
-                    return criteriaBuilder.lessThanOrEqualTo(
-                            getPath(root, filterCriteria.getFieldName()), filterCriteria.getConvertedSingleValue());
-                });
+                filterCriteria -> (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.lessThanOrEqualTo(
+                        getPath(root, filterCriteria.getFieldName()), filterCriteria.getConvertedSingleValue()));
 
-        map.put(FilterOperation.IN, filterCriteria -> (root, criteriaQuery, criteriaBuilder) -> {
-            if (filterCriteria.getConvertedValues() == null) {
-                return criteriaBuilder.conjunction();
-            }
-            return getPath(root, filterCriteria.getFieldName()).in(filterCriteria.getConvertedValues());
-        });
+        map.put(FilterOperation.IN, filterCriteria -> (root, criteriaQuery, criteriaBuilder) -> getPath(root, filterCriteria.getFieldName()).in(filterCriteria.getConvertedValues()));
 
-        map.put(FilterOperation.NOT_IN, filterCriteria -> (root, criteriaQuery, criteriaBuilder) -> {
-            if (filterCriteria.getConvertedValues() == null) {
-                return criteriaBuilder.conjunction();
-            }
-            return criteriaBuilder
-                    .not(getPath(root, filterCriteria.getFieldName()).in(filterCriteria.getConvertedValues()));
-        });
+        map.put(FilterOperation.NOT_IN, filterCriteria -> (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder
+                .not(getPath(root, filterCriteria.getFieldName()).in(filterCriteria.getConvertedValues())));
 
         map.put(FilterOperation.BETWEEN,
-                filterCriteria -> (root, criteriaQuery, criteriaBuilder) -> {
-                    if (filterCriteria.getMinValue() == null || filterCriteria.getMaxValue() == null) {
-                        return criteriaBuilder.conjunction();
-                    }
-                    return criteriaBuilder.between(
-                            getPath(root, filterCriteria.getFieldName()), filterCriteria.getMinValue(),
-                            filterCriteria.getMaxValue());
-                });
+                filterCriteria -> (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.between(
+                        getPath(root, filterCriteria.getFieldName()), filterCriteria.getMinValue(),
+                        filterCriteria.getMaxValue()));
 
-        map.put(FilterOperation.CONTAINS, filterCriteria -> (root, criteriaQuery, criteriaBuilder) -> {
-            if (filterCriteria.getConvertedSingleValue() == null) {
-                return criteriaBuilder.conjunction();
-            }
-            return criteriaBuilder
-                    .like(getPath(root, filterCriteria.getFieldName()), "%" + filterCriteria.getConvertedSingleValue() + "%");
-        });
+        map.put(FilterOperation.CONTAINS, filterCriteria -> (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder
+                        .like(criteriaBuilder.lower(getPath(root, filterCriteria.getFieldName())), ("%" + filterCriteria.getConvertedSingleValue() + "%").toLowerCase()));
 
         map.put(FilterOperation.IS_NULL, filterCriteria -> (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder
                 .isNull(getPath(root, filterCriteria.getFieldName())));

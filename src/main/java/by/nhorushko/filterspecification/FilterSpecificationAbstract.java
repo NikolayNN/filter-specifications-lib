@@ -32,6 +32,7 @@ public abstract class FilterSpecificationAbstract<ENTITY> {
             FilterCriteria<T> criteria = new FilterCriteria<>(fieldName, filterValue, converter);
             return specifications.getSpecification(criteria.getOperation()).apply(criteria);
         }
-        return null;
+        return specifications.getSpecification(FilterOperation.ALWAYS_TRUE)
+                .apply(new FilterCriteria<>(fieldName, "always_true#000", converter));
     }
 }

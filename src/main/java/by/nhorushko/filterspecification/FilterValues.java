@@ -11,7 +11,7 @@ public class FilterValues {
 
         String[] filterSplit = StringUtils.split(values, ConverterSeparators.FIELD_FILTER);
         if (filterSplit.length != 2) {
-            throw new IllegalArgumentException(String.format("More than one or no separator '%s' found", ConverterSeparators.FIELD_FILTER));
+            throw new IllegalArgumentException(String.format("More than one or no separator '%s' found in filter: %s", ConverterSeparators.FIELD_FILTER, values));
         }
         String[] operationValues = StringUtils.split(filterSplit[1], ConverterSeparators.VALUES);
         if (operationValues.length < 1) {
