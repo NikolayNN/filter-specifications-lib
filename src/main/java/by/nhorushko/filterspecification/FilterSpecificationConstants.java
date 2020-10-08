@@ -1,6 +1,7 @@
 package by.nhorushko.filterspecification;
 
-public interface ConverterSeparators {
+public interface FilterSpecificationConstants {
     String FIELD_FILTER = "#";
     String VALUES = ",";
+    String FILTER_SUFFIX = "Filter";
 }

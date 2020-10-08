@@ -161,7 +161,7 @@ public class FilterCriteria<T extends Comparable<T>> {
             convertedValues.addAll(originalValues.stream().map(converterFunction).collect(Collectors.toList()));
         } else {
             //All other operation
-            if (operation != FilterOperation.IS_NULL ) {
+            if (operation != FilterOperation.IS_NULL) {
                 this.convertedSingleValue = converterFunction.apply(operationValues.get(0));
             }
         }

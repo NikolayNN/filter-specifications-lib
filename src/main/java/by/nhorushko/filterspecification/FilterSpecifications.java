@@ -88,8 +88,6 @@ public class FilterSpecifications<E, T extends Comparable<T>> {
 
         map = new EnumMap<>(FilterOperation.class);
 
-        map.put(FilterOperation.ALWAYS_TRUE, filterCriteria -> (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.conjunction());
-
         // Equal
         map.put(FilterOperation.EQUAL, filterCriteria -> (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder
                 .equal(getPath(root, filterCriteria.getFieldName()), filterCriteria.getConvertedSingleValue()));
@@ -128,6 +126,8 @@ public class FilterSpecifications<E, T extends Comparable<T>> {
 
         map.put(FilterOperation.IS_NULL, filterCriteria -> (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder
                 .isNull(getPath(root, filterCriteria.getFieldName())));
+
+        map.put(FilterOperation.ALWAYS_TRUE, filterCriteria -> (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.conjunction());
 
         return map;
     }
