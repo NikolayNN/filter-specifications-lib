@@ -34,26 +34,14 @@ public class ConvertersExt extends Converters {
 
 Подключение библиотеки:
 ```
-<repositories>
-    <repository>
-        <id>access-service-mvn-repo</id>
-        <url>https://raw.github.com/NNikolay/filter-specifications-lib/mvn-repo/</url>
-        <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>always</updatePolicy>
-        </snapshots>
-    </repository>
-</repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
 
-<dependency>
-    <groupId>by.nhorushko</groupId>
-    <artifactId>filter-specifications-lib</artifactId>
-    <version>{version}</version>
-     <exclusions>
-                    <exclusion>
-                        <groupId>*</groupId>
-                        <artifactId>*</artifactId>
-                    </exclusion>
-                </exclusions>
-</dependency>
+       <dependency>
+            <groupId>com.github.NikolayNN</groupId>
+            <artifactId>filter-specifications-lib</artifactId>
+            <version>2.0</version>
+        </dependency>
 ```
