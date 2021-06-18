@@ -13,20 +13,39 @@ public abstract class FilterSpecificationUtils {
     private static final Set<FilterOperation> twoValueOperations = Set.of(
             FilterOperation.BETWEEN);
 
-    public static String getValue(String filter) {
-        return filter.split(FilterSpecificationConstants.FIELD_FILTER)[1];
+    public static boolean isBlank(String filter) {
+        return filter == null || filter.trim().length() == 0 || filter.split(FilterSpecificationConstants.FIELD_FILTER).length != 2;
+
     }
+
+    /**
+     * @throws NullPointerException if filter null
+     */
+    public static String[] getAllValues(String filter) throws NullPointerException {
+        return filter.split(FilterSpecificationConstants.FIELD_FILTER)[1].split(FilterSpecificationConstants.VALUES);
+    }
+
+    /**
+     * @throws NullPointerException if filter null
+     */
+    public static String getFirstValue(String filter) throws NullPointerException {
+        return filter.split(FilterSpecificationConstants.FIELD_FILTER)[1].split(FilterSpecificationConstants.VALUES)[0];
+    }
+
+    /**
+     * @throws NullPointerException if filter null
+     */
+    public static long getFirstLongValue(String filter) throws NullPointerException {
+        return Long.parseLong(filter.split(FilterSpecificationConstants.FIELD_FILTER)[1].split(FilterSpecificationConstants.VALUES)[0]);
+    }
+
 
     public static FilterOperation getOperation(String filter) {
         return FilterOperation.fromValue(filter.split(FilterSpecificationConstants.FIELD_FILTER)[0]);
     }
 
     public static boolean checkFilterOperation(String filter, Set<FilterOperation> availableOperations) {
-        return availableOperations.contains(getOperation(filter));
-    }
-
-    public static boolean checkFilterOperation(String filter, FilterOperation availableOperation) {
-        return getOperation(filter).equals(availableOperation);
+        return filter == null || availableOperations.contains(getOperation(filter));
     }
 
     public static String buildFilter(FilterOperation operation, Object... params) {

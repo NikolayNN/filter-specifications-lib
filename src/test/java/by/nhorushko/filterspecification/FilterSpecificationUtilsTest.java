@@ -14,9 +14,32 @@ public class FilterSpecificationUtilsTest {
     public ExpectedException exceptionRule = ExpectedException.none();
 
     @Test
-    public void getValue() {
-        assertEquals("123", FilterSpecificationUtils.getValue("eq#123"));
-        assertEquals("1,2,3", FilterSpecificationUtils.getValue("in#1,2,3"));
+    public void isBlank() {
+        assertFalse(FilterSpecificationUtils.isBlank("eq#123"));
+        assertFalse(FilterSpecificationUtils.isBlank("in#123,321"));
+        assertTrue(FilterSpecificationUtils.isBlank(null));
+        assertTrue(FilterSpecificationUtils.isBlank("    "));
+        assertTrue(FilterSpecificationUtils.isBlank("eq"));
+        assertTrue(FilterSpecificationUtils.isBlank("eq#"));
+
+    }
+
+    @Test
+    public void getAllValues() {
+        assertEquals(new String[]{"123"}, FilterSpecificationUtils.getAllValues("eq#123"));
+        assertEquals(new String[]{"1", "2", "3"}, FilterSpecificationUtils.getAllValues("in#1,2,3"));
+    }
+
+    @Test
+    public void getFirstValue() {
+        assertEquals("123", FilterSpecificationUtils.getFirstValue("eq#123"));
+        assertEquals("1", FilterSpecificationUtils.getFirstValue("in#1,2,3"));
+    }
+
+    @Test
+    public void getFirstLongValue() {
+        assertEquals(123L, FilterSpecificationUtils.getFirstLongValue("eq#123"));
+        assertEquals(1L, FilterSpecificationUtils.getFirstLongValue("in#1,2,3"));
     }
 
     @Test
@@ -28,13 +51,8 @@ public class FilterSpecificationUtilsTest {
     @Test
     public void checkFilterOperation() {
         assertTrue(FilterSpecificationUtils.checkFilterOperation("eq#123", Set.of(FilterOperation.IN, FilterOperation.EQUAL)));
+        assertTrue(FilterSpecificationUtils.checkFilterOperation(null, Set.of(FilterOperation.IN, FilterOperation.EQUAL)));
         assertFalse(FilterSpecificationUtils.checkFilterOperation("eq#123", Set.of(FilterOperation.IN)));
-    }
-
-    @Test
-    public void checkFilterOperation2() {
-        assertTrue(FilterSpecificationUtils.checkFilterOperation("eq#123", FilterOperation.EQUAL));
-        assertFalse(FilterSpecificationUtils.checkFilterOperation("eq#123", FilterOperation.IN));
     }
 
     @Test
