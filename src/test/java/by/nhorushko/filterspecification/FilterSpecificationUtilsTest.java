@@ -49,10 +49,23 @@ public class FilterSpecificationUtilsTest {
     }
 
     @Test
+    public void isAvailableOperation() {
+        assertTrue(FilterSpecificationUtils.isAvailableOperation("eq#123", Set.of(FilterOperation.IN, FilterOperation.EQUAL)));
+        assertTrue(FilterSpecificationUtils.isAvailableOperation(null, Set.of(FilterOperation.IN, FilterOperation.EQUAL)));
+        assertFalse(FilterSpecificationUtils.isAvailableOperation("eq#123", Set.of(FilterOperation.IN)));
+    }
+
+    @Test
     public void checkFilterOperation() {
-        assertTrue(FilterSpecificationUtils.checkFilterOperation("eq#123", Set.of(FilterOperation.IN, FilterOperation.EQUAL)));
-        assertTrue(FilterSpecificationUtils.checkFilterOperation(null, Set.of(FilterOperation.IN, FilterOperation.EQUAL)));
-        assertFalse(FilterSpecificationUtils.checkFilterOperation("eq#123", Set.of(FilterOperation.IN)));
+        exceptionRule.expect(IllegalArgumentException.class);
+        exceptionRule.expectMessage("Filter: 'eq#123', expect operations: '[in]', but was 'eq'");
+        FilterSpecificationUtils.checkFilterOperation("eq#123", Set.of(FilterOperation.IN));
+    }
+
+    @Test
+    public void checkFilterOperation_ok() {
+        FilterSpecificationUtils.checkFilterOperation("eq#123", Set.of(FilterOperation.IN, FilterOperation.EQUAL));
+        FilterSpecificationUtils.checkFilterOperation(null, Set.of(FilterOperation.IN, FilterOperation.EQUAL));
     }
 
     @Test

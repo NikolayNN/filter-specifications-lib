@@ -44,8 +44,15 @@ public abstract class FilterSpecificationUtils {
         return FilterOperation.fromValue(filter.split(FilterSpecificationConstants.FIELD_FILTER)[0]);
     }
 
-    public static boolean checkFilterOperation(String filter, Set<FilterOperation> availableOperations) {
+    public static boolean isAvailableOperation(String filter, Set<FilterOperation> availableOperations) {
         return filter == null || availableOperations.contains(getOperation(filter));
+    }
+
+    public static void checkFilterOperation(String filter, Set<FilterOperation> availableOperations) {
+        if (!isAvailableOperation(filter, availableOperations)) {
+            throw new IllegalArgumentException(
+                    String.format("Filter: '%s', expect operations: '%s', but was '%s'", filter, availableOperations, getOperation(filter)));
+        }
     }
 
     public static String buildFilter(FilterOperation operation, Object... params) {
