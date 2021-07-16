@@ -68,6 +68,10 @@ public abstract class FilterSpecificationUtils {
         return build(operation, 1, params);
     }
 
+    public static String buildCollectionColumn(String columnName) {
+        return FilterSpecificationConstants.COLLECTION_COLUMN_PREFIX + columnName;
+    }
+
     private static String build(FilterOperation operation, int expectSize, Object... params) {
         if (params.length != expectSize) {
             throwException(operation, expectSize, params.length);

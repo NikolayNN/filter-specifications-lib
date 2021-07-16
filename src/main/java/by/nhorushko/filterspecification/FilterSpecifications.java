@@ -68,6 +68,7 @@ import java.util.function.Function;
  */
 @Service
 public class FilterSpecifications<E, T extends Comparable<T>> {
+
     private EnumMap<FilterOperation, Function<FilterCriteria<T>, Specification<E>>> map;
 
     public FilterSpecifications() {
@@ -134,12 +135,19 @@ public class FilterSpecifications<E, T extends Comparable<T>> {
 
     private <Y> Path<Y> getPath(Root<E> root, String fieldName) {
         String[] split = fieldName.split("\\.");
-        Path p = root.get(split[0]);
-        if (split.length > 1) {
-            for (int i = 1; i < split.length; i++) {
-                p = p.get(split[i]);
-            }
+        Path<Y> p;
+        if (isCollectionColumn(split[0])) {
+            p = root.join(split[0].substring(1));
+        } else {
+            p = root.get(split[0]);
+        }
+        for (int i = 1; i < split.length; i++) {
+            p = p.get(split[i]);
         }
         return p;
+    }
+
+    private boolean isCollectionColumn(String columnName) {
+        return columnName.charAt(0) == FilterSpecificationConstants.COLLECTION_COLUMN_PREFIX;
     }
 }
