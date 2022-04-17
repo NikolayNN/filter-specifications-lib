@@ -20,6 +20,8 @@ public abstract class Converters {
         map.put(String.class, s -> s);
         map.put(Long.class, Long::valueOf);
         map.put(Integer.class, Integer::valueOf);
+        map.put(Float.class, Float::valueOf);
+        map.put(Double.class, Double::valueOf);
         map.put(ChronoLocalDate.class, LocalDate::parse);
         map.put(LocalTime.class, LocalTime::parse);
         map.put(Boolean.class, Boolean::valueOf);
