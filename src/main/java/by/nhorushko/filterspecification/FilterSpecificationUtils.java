@@ -1,6 +1,8 @@
 package by.nhorushko.filterspecification;
 
+import javax.persistence.TemporalType;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -55,10 +57,22 @@ public abstract class FilterSpecificationUtils {
         }
     }
 
+    public static Optional<String> buildFilterOptional(FilterOperation operation, Object... params) {
+        if (params.length == 0) {
+            return Optional.empty();
+        }
+        String filter = buildFilterInternal(operation, params);
+        return Optional.of(filter);
+    }
+
     public static String buildFilter(FilterOperation operation, Object... params) {
         if (params.length == 0) {
             throw new RuntimeException("can't be build filter params length is 0");
         }
+        return buildFilterInternal(operation, params);
+    }
+
+    private static String buildFilterInternal(FilterOperation operation, Object... params) {
         if (multipleOperations.contains(operation)) {
             return build(operation, params);
         }
@@ -67,6 +81,7 @@ public abstract class FilterSpecificationUtils {
         }
         return build(operation, 1, params);
     }
+
 
     public static String buildCollectionColumn(String columnName) {
         return FilterSpecificationConstants.COLLECTION_COLUMN_PREFIX + columnName;
