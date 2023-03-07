@@ -57,12 +57,12 @@ public abstract class FilterSpecificationUtils {
         }
     }
 
-    public static Optional<String> buildFilterOptional(FilterOperation operation, Object... params) {
+    public static String buildFilterEmptyable(FilterOperation operation, Object... params) {
         if (params.length == 0) {
-            return Optional.empty();
+            return "";
         }
         String filter = buildFilterInternal(operation, params);
-        return Optional.of(filter);
+        return filter;
     }
 
     public static String buildFilter(FilterOperation operation, Object... params) {
