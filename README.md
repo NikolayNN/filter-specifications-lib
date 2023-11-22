@@ -29,6 +29,7 @@ public class ConvertersExt extends Converters {
  <tr><td>btn      </td><td> Between                    </td><td>joiningDate=btn#2018-01-01, 2016-01-01   </td>
  <tr><td>like     </td><td> Like                       </td><td>firstName=like#John     </td></tr>
  <tr><td>en     </td><td> equalsNull                       </td><td>firstName=en#null     </td></tr>
+ <tr><td>nn     </td><td> not null                       </td><td>firstName=nn#null     </td></tr>
  </table>
 
 
