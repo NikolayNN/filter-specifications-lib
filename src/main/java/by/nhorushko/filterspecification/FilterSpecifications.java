@@ -128,6 +128,9 @@ public class FilterSpecifications<E, T extends Comparable<T>> {
         map.put(FilterOperation.IS_NULL, filterCriteria -> (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder
                 .isNull(getPath(root, filterCriteria.getFieldName())));
 
+        map.put(FilterOperation.NOT_NULL, filterCriteria -> (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder
+                .isNotNull(getPath(root, filterCriteria.getFieldName())));
+
         map.put(FilterOperation.ALWAYS_TRUE, filterCriteria -> (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.conjunction());
 
         return map;

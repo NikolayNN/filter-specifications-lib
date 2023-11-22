@@ -32,6 +32,7 @@ public enum FilterOperation {
     BETWEEN("btn"),
     CONTAINS("like"),
     IS_NULL("en"),
+    NOT_NULL("nn"),
     ALWAYS_TRUE("always_true");
 
     private String value;
