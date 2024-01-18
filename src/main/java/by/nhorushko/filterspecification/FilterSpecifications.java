@@ -1,10 +1,10 @@
 package by.nhorushko.filterspecification;
 
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Root;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Function;
