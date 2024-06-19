@@ -99,7 +99,7 @@ public class FilterSpecifications<E, T extends Comparable<T>> {
 
         map.put(FilterOperation.GREATER_THAN,
                 filterCriteria -> (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.greaterThan(
-                        getPath(root, filterCriteria.getFieldName(),criteriaBuilder), filterCriteria.getConvertedSingleValue()));
+                        getPath(root, filterCriteria.getFieldName(), criteriaBuilder), filterCriteria.getConvertedSingleValue()));
 
         map.put(FilterOperation.GREATER_THAN_OR_EQUAL_TO,
                 filterCriteria -> (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.greaterThanOrEqualTo(
@@ -165,39 +165,44 @@ public class FilterSpecifications<E, T extends Comparable<T>> {
      *  *   </li>
      * </ul>
      *
-     * @param <Y> The type of the attribute at the end of the path.
-     * @param root the root entity from which to start the path.
-     * @param fieldName the dot-separated path string defining the field or nested fields to be accessed.
+     * @param <Y>             The type of the attribute at the end of the path.
+     * @param root            the root entity from which to start the path.
+     * @param fieldName       the dot-separated path string defining the field or nested fields to be accessed.
      * @param criteriaBuilder the CriteriaBuilder instance used for creating type-safe queries.
      * @return a Path object representing the specified entity attribute.
      * @throws IllegalArgumentException if a class specified for type casting cannot be found.
      */
     private <Y> Path<Y> getPath(Root<E> root, String fieldName, CriteriaBuilder criteriaBuilder) {
-        String[] split = fieldName.split("\\.");
+        FieldNameIterator iterator = new FieldNameIterator(fieldName);
         Path<Y> p;
-        if (isCollectionColumn(split[0])) {
-            p = root.join(split[0].substring(1));
+        FieldNameIterator.Item item = iterator.next();
+        if (item.isCollection()) {
+            p = root.join(item.getValue());
         } else {
-            p = root.get(split[0]);
+            p = root.get(item.getValue());
         }
-        for (int i = 1; i < split.length; i++) {
-            if (split[i].startsWith("t:")) {
-                String className = split[i].substring(2);
+        while (iterator.hasNext()) {
+            item = iterator.next();
+            if (item.isClass()) {
                 try {
-                    Class<Y> type = (Class<Y>) Class.forName(className);
+                    Class<Y> type = (Class<Y>) Class.forName(item.getValue());
                     p = criteriaBuilder.treat(p, type);
                 } catch (ClassNotFoundException e) {
-                    throw new IllegalArgumentException("Class not found for treat operation: " + className);
+                    throw new IllegalArgumentException("Class not found for treat operation: " + item.getValue());
                 }
-            } else {
-                p = p.get(split[i]);
+            }
+            if (item.isCollection()) {
+                p = root.join(item.getValue());
+            }
+            if (item.isProperty()) {
+                p = root.get(item.getValue());
             }
         }
         return p;
     }
 
 
-    private boolean isCollectionColumn(String columnName) {
+    private static boolean isCollectionColumn(String columnName) {
         return columnName.charAt(0) == FilterSpecificationConstants.COLLECTION_COLUMN_PREFIX;
     }
 }
