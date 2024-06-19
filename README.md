@@ -32,6 +32,30 @@ public class ConvertersExt extends Converters {
  <tr><td>nn     </td><td> not null                       </td><td>firstName=nn#null     </td></tr>
  </table>
 
+<p>Examples of path strings:</p>
+    <ul>
+       <li><b>Simple attribute:</b> "username"
+           <p>Direct attribute of the root entity.</p>
+           <p><code>root.get("username")</code></p>
+       </li>
+       <li><b>Nested attribute:</b> "user.address.street"
+           <p>Navigates through nested entities: from 'user' to 'address', then to 'street'.</p>
+           <p><code>root.get("user").get("address").get("street")</code></p>
+       </li>
+       <li><b>Collection elements:</b> "$employees.name"
+           <p>Accesses elements of a collection 'employees' and retrieves the 'name' attribute.</p>
+           <p><code>root.join("employees").get("name")</code></p>
+       </li>
+       <li><b>Polymorphic type casting:</b> "user.t:com.example.SpecialUser.specialAttribute"
+           <p>Casts the 'user' path to 'SpecialUser' to access a specific attribute 'specialAttribute' available only in the subclass.</p>
+           <p><code>criteriaBuilder.treat(root.get("user"), SpecialUser.class).get("specialAttribute")</code></p>
+       </li>
+       <li><b>Polymorphic type casting for collection elements:</b> "$employees.t:com.example.SpecialEmployee.specialSkill"
+            <p>Accesses a collection 'employees', and casts each element to 'SpecialEmployee' to retrieve a specific attribute 'specialSkill' available only in the subclass.</p>
+            <p><code>criteriaBuilder.treat(root.join("employees"), SpecialEmployee.class).get("specialSkill")</code></p>
+        </li>
+    </ul>
+
 
 Подключение библиотеки:
 ```
