@@ -12,7 +12,7 @@ public class FieldNameIteratorTest {
 
         FieldNameIterator.Item actual = iterator.next();
         assertEquals("name", actual.getValue());
-        assertFalse(actual.isCollection());
+        assertFalse(actual.isJoin());
         assertFalse(iterator.hasNext());
     }
 
@@ -22,12 +22,12 @@ public class FieldNameIteratorTest {
 
         FieldNameIterator.Item actual = iterator.next();
         assertEquals("order", actual.getValue());
-        assertFalse(actual.isCollection());
+        assertFalse(actual.isJoin());
         assertTrue(iterator.hasNext());
 
         actual = iterator.next();
         assertEquals("name", actual.getValue());
-        assertFalse(actual.isCollection());
+        assertFalse(actual.isJoin());
         assertFalse(iterator.hasNext());
     }
 
@@ -37,18 +37,18 @@ public class FieldNameIteratorTest {
 
         FieldNameIterator.Item actual = iterator.next();
         assertEquals("order", actual.getValue());
-        assertFalse(actual.isCollection());
+        assertTrue(actual.isJoin());
         assertTrue(iterator.hasNext());
 
 
         actual = iterator.next();
         assertEquals("skills", actual.getValue());
-        assertTrue(actual.isCollection());
+        assertTrue(actual.isJoin());
         assertTrue(iterator.hasNext());
 
         actual = iterator.next();
         assertEquals("id", actual.getValue());
-        assertFalse(actual.isCollection());
+        assertFalse(actual.isJoin());
         assertFalse(iterator.hasNext());
     }
 }

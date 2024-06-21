@@ -1,5 +1,7 @@
 package by.nhorushko.filterspecification;
 
+import by.nhorushko.filterspecification.FieldNameIterator.Item;
+import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
@@ -137,20 +139,25 @@ public class FilterSpecifications<E, T extends Comparable<T>> {
     }
 
     private <Y> Path<Y> getPath(Root<E> root, String fieldName) {
-        String[] split = fieldName.split("\\.");
-        Path<Y> p;
-        if (isCollectionColumn(split[0])) {
-            p = root.join(split[0].substring(1));
-        } else {
-            p = root.get(split[0]);
-        }
-        for (int i = 1; i < split.length; i++) {
-            p = p.get(split[i]);
-        }
-        return p;
-    }
 
-    private boolean isCollectionColumn(String columnName) {
-        return columnName.charAt(0) == FilterSpecificationConstants.COLLECTION_COLUMN_PREFIX;
+        FieldNameIterator iterator = new FieldNameIterator(fieldName);
+
+        Path<Y> path;
+        Item current = iterator.next();
+        if (current.isJoin()) {
+            path = root.join(current.getValue());
+        } else {
+            path = root.get(current.getValue());
+        }
+
+        while (iterator.hasNext()) {
+            current = iterator.next();
+            if (current.isJoin()) {
+                path = ((Join<?, ?>) path).join(current.getValue());
+            } else {
+                path = path.get(current.getValue());
+            }
+        }
+        return path;
     }
 }

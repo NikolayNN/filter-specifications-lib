@@ -2,29 +2,42 @@ package by.nhorushko.filterspecification;
 
 import java.util.NoSuchElementException;
 
+
 class FieldNameIterator {
 
     private final String[] parts;
     private int currentIndex = 0;
+    private int joinMaxIndex = -1;
 
     public FieldNameIterator(String fieldName) {
         this.parts = fieldName.split("\\.");
+        for (int i = 0; i < parts.length; i++) {
+            if (isCollectionColumn(parts[i])) {
+                parts[i] = parts[i].substring(1);
+                joinMaxIndex = i;
+            }
+        }
+    }
+
+    private boolean isCollectionColumn(String columnName) {
+        return columnName.charAt(0) == FilterSpecificationConstants.COLLECTION_COLUMN_PREFIX;
     }
 
     public Item next() {
         if (currentIndex >= parts.length) {
             throw new NoSuchElementException();
         }
-        String current = parts[currentIndex++];
-        if (isCollectionColumn(current)) {
-            return new Item(current.substring(1), Type.COLLECTION);
-        } else {
-            return new Item(current, Type.PROPERTY);
-        }
+        Item item = new Item(parts[currentIndex], determinateType(currentIndex));
+        currentIndex++;
+        return item;
     }
 
-    private boolean isCollectionColumn(String columnName) {
-        return columnName.charAt(0) == FilterSpecificationConstants.COLLECTION_COLUMN_PREFIX;
+    private Type determinateType(int index) {
+        if (index <= joinMaxIndex) {
+            return Type.JOIN;
+        } else {
+            return Type.GET;
+        }
     }
 
     public boolean hasNext() {
@@ -44,12 +57,12 @@ class FieldNameIterator {
             return value;
         }
 
-        public boolean isCollection() {
-            return type == Type.COLLECTION;
+        public boolean isJoin() {
+            return type == Type.JOIN;
         }
     }
 
     private enum Type {
-        COLLECTION, PROPERTY
+        JOIN, GET
     }
 }
